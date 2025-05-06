@@ -1,11 +1,66 @@
+import tkinter as tk
+from tkinter import filedialog, messagebox
+from PIL import Image, ImageTk
+from filtres import *
+import os
+
+# Variables globales
+photo_originale = None
+photo_affichee = None
+image_label = None
+historique = []
+indice_historique = -1
+
+def ouvrir_image():
+    global photo_originale, photo_affichee, historique, indice_historique
+    chemin = filedialog.askopenfilename(title="Choisir une image", filetypes=[("Images", "*.jpg *.png *.jpeg")])
+    if chemin:
+        photo_originale = Image.open(chemin).convert("RGB")
+        photo_affichee = photo_originale.copy()
+        historique = [photo_affichee.copy()]
+        indice_historique = 0
+        afficher_image()
+
+def afficher_image():
+    global image_label, photo_affichee
+    tk_image = ImageTk.PhotoImage(photo_affichee)
+    image_label.configure(image=tk_image)
+    image_label.image = tk_image
+
+def appliquer_filtre(filtre):
+    global photo_affichee, historique, indice_historique
+    if photo_affichee:
+        historique = historique[:indice_historique + 1]
+        photo_affichee = filtre(historique[indice_historique].copy())
+        historique.append(photo_affichee.copy())
+        indice_historique += 1
+        afficher_image()
+
+def annuler():
+    global indice_historique, photo_affichee
+    if indice_historique > 0:
+        indice_historique -= 1
+        photo_affichee = historique[indice_historique].copy()
+        afficher_image()
+
+def retablir():
+    global indice_historique, photo_affichee
+    if indice_historique < len(historique) - 1:
+        indice_historique += 1
+        photo_affichee = historique[indice_historique].copy()
+        afficher_image()
+
+def sauvegarder_image():
+    if photo_affichee:
+        chemin = filedialog.asksaveasfilename(defaultextension=".png", filetypes=[("PNG", "*.png"), ("JPEG", "*.jpg")])
+        if chemin:
+            photo_affichee.save(chemin)
+
 def lancer_interface():
-    print("Lancement de l'interface...")  # Pour vérifier si la fonction est bien appelée
     global image_label
+    print("Lancement de l'interface...")  # Vérification
     fenetre = tk.Tk()
     fenetre.title("UVSQolor")
-
-    # Mise à jour de l'écran avant de démarrer la boucle Tkinter
-    fenetre.update()
 
     menu = tk.Menu(fenetre)
     fenetre.config(menu=menu)
