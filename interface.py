@@ -66,6 +66,10 @@ def sauvegarder_image():
             photo_affichee.save(chemin)
 
 def lancer_interface():
+    fenetre = tk.Tk()
+    fenetre.lift()
+    fenetre.attributes('-topmost', True)
+    fenetre.after(100, lambda: fenetre.attributes('-topmost', False))
     global image_label
     print("Lancement de l'interface...")
     fenetre = tk.Tk()
