@@ -16,6 +16,7 @@ def ouvrir_image():
     print("Ouverture d'image...")
     chemin = filedialog.askopenfilename(title="Choisir une image", filetypes=[("Images", "*.jpg *.png *.jpeg")])
     if chemin:
+        # Ouvrir l'image en mode RGB pour éviter les problèmes de couleurs
         photo_originale = Image.open(chemin).convert("RGB")
         photo_affichee = photo_originale.copy()
         historique = [photo_affichee.copy()]
@@ -25,19 +26,21 @@ def ouvrir_image():
 def afficher_image():
     global image_label, photo_affichee
     print("Affichage de l'image...")
+    # Convertir l'image PIL en format compatible avec Tkinter
     tk_image = ImageTk.PhotoImage(photo_affichee)
     image_label.configure(image=tk_image)
-    image_label.image = tk_image
+    image_label.image = tk_image  # Sauvegarde l'image dans l'attribut de l'objet Label
+    image_label.update_idletasks()  # Force la mise à jour de l'image
 
 def appliquer_filtre(filtre):
     global photo_affichee, historique, indice_historique
     print("Application du filtre...")
     if photo_affichee:
-        historique = historique[:indice_historique + 1]
-        photo_affichee = filtre(historique[indice_historique].copy())
-        historique.append(photo_affichee.copy())
+        historique = historique[:indice_historique + 1]  # Limiter l'historique à l'indice actuel
+        photo_affichee = filtre(historique[indice_historique].copy())  # Appliquer le filtre
+        historique.append(photo_affichee.copy())  # Ajouter l'image filtrée à l'historique
         indice_historique += 1
-        afficher_image()
+        afficher_image()  # Afficher l'image après le filtre
 
 def annuler():
     global indice_historique, photo_affichee
@@ -68,9 +71,11 @@ def lancer_interface():
     fenetre = tk.Tk()
     fenetre.title("UVSQolor")
 
+    # Créer le menu
     menu = tk.Menu(fenetre)
     fenetre.config(menu=menu)
 
+    # Menu fichier
     fichier_menu = tk.Menu(menu, tearoff=0)
     fichier_menu.add_command(label="Ouvrir", command=ouvrir_image)
     fichier_menu.add_command(label="Sauvegarder", command=sauvegarder_image)
@@ -78,15 +83,18 @@ def lancer_interface():
     fichier_menu.add_command(label="Quitter", command=fenetre.quit)
     menu.add_cascade(label="Fichier", menu=fichier_menu)
 
+    # Menu édition
     edition_menu = tk.Menu(menu, tearoff=0)
     edition_menu.add_command(label="Annuler", command=annuler)
     edition_menu.add_command(label="Rétablir", command=retablir)
     menu.add_cascade(label="Édition", menu=edition_menu)
 
+    # Menu filtres
     filtre_menu = tk.Menu(menu, tearoff=0)
     filtre_menu.add_command(label="Flou uniforme", command=lambda: appliquer_filtre(filtre_flou_uniforme))
     menu.add_cascade(label="Filtres", menu=filtre_menu)
 
+    # Label pour afficher l'image
     image_label = tk.Label(fenetre)
     image_label.pack()
 
