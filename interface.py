@@ -107,8 +107,9 @@ def lancer_interface():
     image_label = tk.Label(fenetre)
     image_label.pack()
 
-    # Charger automatiquement une image si elle existe
+    print("Interface prête.")
+
+    # Charger une image après avoir créé l'image_label
     charger_image_par_defaut()
 
-    print("Interface prête.")
     fenetre.mainloop()
