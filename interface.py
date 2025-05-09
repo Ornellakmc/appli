@@ -1,7 +1,13 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox
 from PIL import Image, ImageTk
-from filtres import filtre_flou_uniforme
+from filtres import (
+    filtre_flou_uniforme,
+    filtre_niveaux_de_gris,
+    filtre_negatif,
+    filtre_sepia,
+    filtre_contraste
+)
 import os
 
 # Variables globales
@@ -101,6 +107,10 @@ def lancer_interface():
     # Menu Filtres
     filtre_menu = tk.Menu(menu, tearoff=0)
     filtre_menu.add_command(label="Flou uniforme", command=lambda: appliquer_filtre(filtre_flou_uniforme))
+    filtre_menu.add_command(label="Niveaux de gris", command=lambda: appliquer_filtre(filtre_niveaux_de_gris))
+    filtre_menu.add_command(label="Négatif", command=lambda: appliquer_filtre(filtre_negatif))
+    filtre_menu.add_command(label="Sépia", command=lambda: appliquer_filtre(filtre_sepia))
+    filtre_menu.add_command(label="Contraste (+ fort)", command=lambda: appliquer_filtre(filtre_contraste))
     menu.add_cascade(label="Filtres", menu=filtre_menu)
 
     # Zone d'affichage
@@ -108,8 +118,6 @@ def lancer_interface():
     image_label.pack()
 
     print("Interface prête.")
-
-    # Charger une image après avoir créé l'image_label
     charger_image_par_defaut()
 
     fenetre.mainloop()
